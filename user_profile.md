@@ -6,10 +6,10 @@
   - 10:00-11:30
   - 14:00-17:00
   - 19:00-22:00
-- After 21:30, avoid heavy cognitive tasks
+- Avoid heavy cognitive tasks after 21:30
 - User is not always at the computer due to offline activities
 - Break times are flexible and should be inserted when needed
-- Workdays are flexible; adjusted working days will be provided in advance
+- Workdays are flexible and may be adjusted in advance
 
 ## Scheduling Preferences
 - Show a draft schedule first
@@ -29,3 +29,25 @@
   1. Today's Top 3
   2. Time-block schedule
   3. Delay suggestions
+
+## Priority System
+- P0 = highest priority
+- P1 = important
+- P2 = deferrable / normal
+
+## Uncertainty Heuristics
+A task is considered high uncertainty if one or more of the following apply:
+- requires exploration
+- insufficient information
+- has external dependencies
+- has never been done before
+- needs authoritative web search
+- current internal thinking is insufficient
+
+## Project Stages
+- Research
+- Planning
+- Executing
+- Revising
+- Pending Validation
+- Completed
