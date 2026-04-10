@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "work_rhythm": {
     "default_start_time": "09:00",
@@ -20,4 +21,28 @@
     "include_project_stage": true,
     "order": ["top3", "time_blocks", "delay_suggestions", "change_reminders"]
   }
+=======
+{
+  "work_rhythm": {
+    "default_start_time": "09:00",
+    "peak_sessions": ["10:00-11:30", "14:00-17:00", "19:00-22:00"],
+    "avoid_heavy_after": "21:30",
+    "offline_possible": true,
+    "break_style": "flexible",
+    "workdays_flexible": true
+  },
+  "preferences": {
+    "show_draft_first": true,
+    "max_core_tasks_per_day": 3,
+    "prioritize_high_uncertainty": true,
+    "batch_similar_tasks": true
+  },
+  "output_preferences": {
+    "concise": true,
+    "include_progress": true,
+    "include_major_changes": true,
+    "include_project_stage": true,
+    "order": ["top3", "time_blocks", "delay_suggestions", "change_reminders"]
+  }
+>>>>>>> 4004b40d2e87f9beb5876d2b4dc9f9baa8352807
 }

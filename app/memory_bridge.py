@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """Local JSON memory bridge for the planner."""
 
 from __future__ import annotations
@@ -133,3 +134,6 @@ def save_user_memory(memory: dict) -> None:
     if not isinstance(memory, dict):
         return
     save_json(str(USER_MEMORY_PATH), memory)
+=======
+
+>>>>>>> 4004b40d2e87f9beb5876d2b4dc9f9baa8352807
