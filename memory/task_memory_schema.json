@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "task_name": "",
   "priority": "P1",
@@ -15,22 +14,4 @@
   "first_time_doing": false,
   "status": "todo",
   "last_updated": ""
-=======
-{
-  "task_name": "",
-  "priority": "P1",
-  "estimated_duration_minutes": 60,
-  "deadline": "",
-  "uncertainty_flags": [],
-  "need_authoritative_web_search": false,
-  "need_computer": true,
-  "need_deep_thinking": true,
-  "project": "",
-  "project_stage": "Planning",
-  "current_progress": "",
-  "external_dependency": false,
-  "first_time_doing": false,
-  "status": "todo",
-  "last_updated": ""
->>>>>>> 4004b40d2e87f9beb5876d2b4dc9f9baa8352807
 }
