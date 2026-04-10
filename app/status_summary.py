@@ -69,13 +69,16 @@ def summarize_blockers(projects: list[dict]) -> list[str]:
 def summarize_recent_progress(tasks: list[dict]) -> list[str]:
     """Return up to 5 recent progress notes."""
     lines: list[str] = []
+    seen: set[str] = set()
     for task in reversed(tasks):
         if not isinstance(task, dict):
             continue
         name = _task_name(task)
         progress = _clean_text(task.get("current_progress"))
-        if name and progress:
-            lines.append(f"{name}：{progress}")
+        text = f"{name}：{progress}" if name and progress else ""
+        if text and text not in seen:
+            seen.add(text)
+            lines.append(text)
         if len(lines) >= 5:
             break
     return lines

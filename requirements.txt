@@ -1,0 +1,2 @@
+langgraph>=0.2.34
+streamlit>=1.37.0
