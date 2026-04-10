@@ -64,5 +64,277 @@
     "first_time_doing": true,
     "date": "2026-04-09",
     "last_updated": "2026-04-09T22:23:55"
+  },
+  {
+    "task_name": "MAPPO强化学习算法的结果对比",
+    "priority": "P0",
+    "estimated_duration": 90,
+    "deadline": "2026-04-12",
+    "uncertainty_level": "high",
+    "need_authoritative_web_search": false,
+    "need_computer": true,
+    "need_deep_thinking": true,
+    "project": "Daily-Task",
+    "project_stage": "Executing",
+    "current_progress": "代码骨架已完成，队友建模未验证，forwarding更改搁置，需要看强化学习的结果修改forwarding",
+    "external_dependency": false,
+    "first_time_doing": false,
+    "date": "2026-04-09",
+    "last_updated": "2026-04-10T13:52:03"
+  },
+  {
+    "task_name": "今天要完成MAPPO算法的实现和跑通测试",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "而且今天空闲的时间要继续完善这个每日计划助手的相关事宜",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "需要我",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "测试后提出一些要求",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "今天新增的任务是尝试做一个每天的前沿新闻",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "股票还有ai发展的相关媒体信息和学术信息的通知框",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "或者是软件",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "还有一些零碎的任务",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "比如想做一个工作搜索引擎的小程序",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "还有ai生成视频综艺",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "需要自己确定综艺任务性格",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "但是我的主要任务是完成MAPPP算法的搭建",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "也就是我研究课题是最重要的",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "我准备",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
+  },
+  {
+    "task_name": "时段是做这个的",
+    "priority": "P1",
+    "duration_minutes": 30,
+    "estimated_duration": 30,
+    "project": "",
+    "need_deep_work": false,
+    "need_deep_thinking": false,
+    "uncertainty_flags": [
+      "project_inferred_missing",
+      "priority_defaulted",
+      "duration_defaulted"
+    ],
+    "uncertainty_level": "high",
+    "date": "2026-04-10",
+    "last_updated": "2026-04-10T14:22:10"
   }
 ]

@@ -1,4 +1,4 @@
-"""State schema for the planner graph."""
+﻿"""State schema for the planner graph."""
 
 from __future__ import annotations
 
@@ -14,9 +14,10 @@ except ImportError:
             pass
     else:
         class PlannerState(TypedDict, total=False):
-            raw_input: dict[str, Any]
+            raw_input: dict[str, Any] | str
             today_input: dict[str, Any]
             extracted_tasks: list[dict[str, Any]]
+            editable_tasks: list[dict[str, Any]]
             ranked_tasks: list[dict[str, Any]]
             scheduled_tasks: list[dict[str, Any]]
             user_memory: dict[str, Any]
@@ -24,13 +25,15 @@ except ImportError:
             task_log: list[dict[str, Any]]
             reminders: list[str]
             warnings: list[str]
-            approved: bool
             delays: list[str]
+            review_required: bool
+            approved: bool
 else:
     class PlannerState(TypedDict, total=False):
-        raw_input: dict[str, Any]
+        raw_input: dict[str, Any] | str
         today_input: dict[str, Any]
         extracted_tasks: list[dict[str, Any]]
+        editable_tasks: list[dict[str, Any]]
         ranked_tasks: list[dict[str, Any]]
         scheduled_tasks: list[dict[str, Any]]
         user_memory: dict[str, Any]
@@ -38,5 +41,6 @@ else:
         task_log: list[dict[str, Any]]
         reminders: list[str]
         warnings: list[str]
-        approved: bool
         delays: list[str]
+        review_required: bool
+        approved: bool

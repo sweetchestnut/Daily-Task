@@ -2,21 +2,27 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import date
+from typing import Any
 
 try:
     from app import memory_bridge, planner
+    from app import task_extractor
     from app.graph_state import PlannerState
 except ModuleNotFoundError:
     import memory_bridge  # type: ignore
     import planner  # type: ignore
+    import task_extractor  # type: ignore
     from graph_state import PlannerState  # type: ignore
 
 
 def load_input_node(state: PlannerState) -> PlannerState:
     payload = state.get("raw_input") or {}
     warnings = list(state.get("warnings", []))
-    if not isinstance(payload, dict):
+    if isinstance(payload, str):
+        payload = {"text_input": payload, "date": date.today().isoformat()}
+    elif not isinstance(payload, dict):
         warnings.append("输入格式无效，已回退为空。")
         payload = {}
     return {"today_input": payload, "warnings": warnings}
@@ -34,16 +40,37 @@ def load_memory_node(state: PlannerState) -> PlannerState:
 def extract_today_tasks_node(state: PlannerState) -> PlannerState:
     today_input = state.get("today_input") or {}
     tasks = today_input.get("tasks", []) if isinstance(today_input, dict) else []
+    text_input = str(today_input.get("text_input") or "").strip() if isinstance(today_input, dict) else ""
     warnings = list(state.get("warnings", []))
-    if not isinstance(tasks, list):
+    if text_input:
+        extracted = task_extractor.extract_tasks(text_input, input_date=str(today_input.get("date") or date.today().isoformat()))
+        if not extracted:
+            warnings.append("未能从自然语言中提取任务。")
+    elif not isinstance(tasks, list):
         warnings.append("tasks 字段不是列表，已忽略。")
-        tasks = []
-    extracted = [task for task in tasks if isinstance(task, dict)]
-    return {"extracted_tasks": extracted, "warnings": warnings}
+        extracted = []
+    else:
+        extracted = []
+        for task in tasks if isinstance(tasks, list) else []:
+            if not isinstance(task, dict):
+                continue
+            normalized = task_extractor.normalize_task_item(
+                task,
+                input_date=str(today_input.get("date") or date.today().isoformat()),
+            )
+            if normalized:
+                extracted.append(normalized)
+    return {
+        "extracted_tasks": extracted,
+        "editable_tasks": deepcopy(extracted),
+        "review_required": True,
+        "approved": False,
+        "warnings": warnings,
+    }
 
 
 def rank_tasks_node(state: PlannerState) -> PlannerState:
-    tasks = list(state.get("extracted_tasks", []))
+    tasks = list(state.get("editable_tasks") or state.get("extracted_tasks", []))
     ranked = sorted(tasks, key=planner.task_sort_key)
     return {"ranked_tasks": ranked}
 
@@ -64,25 +91,41 @@ def review_node(state: PlannerState) -> PlannerState:
         list(state.get("task_log", [])),
     )
     warnings = planner._dedupe_lines(list(state.get("warnings", [])))
-    return {"reminders": reminders, "warnings": warnings, "approved": True}
+    extracted_tasks = list(state.get("extracted_tasks", []))
+    return {
+        "reminders": reminders,
+        "warnings": warnings,
+        "approved": bool(state.get("approved", False)),
+        "editable_tasks": list(state.get("editable_tasks", extracted_tasks)),
+        "review_required": bool(state.get("review_required", False)) and not bool(state.get("approved", False)),
+    }
 
 
 def save_results_node(state: PlannerState) -> PlannerState:
+    if not state.get("approved", False):
+        return {}
     today_input = state.get("today_input") or {}
-    tasks = list(state.get("extracted_tasks", []))
+    tasks = list(state.get("editable_tasks") or state.get("extracted_tasks", []))
     input_date = str(today_input.get("date") or date.today().isoformat())
 
+    normalized_tasks: list[dict[str, Any]] = []
     for task in tasks:
-        if not str(task.get("task_name") or task.get("title") or "").strip():
+        normalized_task = task_extractor.normalize_task_item(task, input_date) if isinstance(task, dict) else None
+        if not normalized_task:
             continue
-        task_record = dict(task)
-        task_record["date"] = str(task_record.get("date") or input_date)
-        memory_bridge.append_task_log_if_new(task_record)
+        normalized_tasks.append(normalized_task)
+        memory_bridge.append_task_log_if_new(dict(normalized_task))
 
-    for project_record in planner._build_project_records(tasks, input_date):
+    for project_record in planner._build_project_records(normalized_tasks, input_date):
         memory_bridge.upsert_project_memory(project_record)
 
     project_memory = memory_bridge.get_project_memory()
     task_log = memory_bridge.get_task_log()
     reminders = planner.build_reminders(project_memory, task_log)
-    return {"project_memory": project_memory, "task_log": task_log, "reminders": reminders}
+    return {
+        "editable_tasks": normalized_tasks,
+        "extracted_tasks": normalized_tasks,
+        "project_memory": project_memory,
+        "task_log": task_log,
+        "reminders": reminders,
+    }

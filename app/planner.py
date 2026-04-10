@@ -3,15 +3,18 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from datetime import date, datetime
 from pathlib import Path
 
 try:
     from app import memory_bridge, status_summary
+    from app import task_extractor
 except ModuleNotFoundError:
     import memory_bridge  # type: ignore
     import status_summary  # type: ignore
+    import task_extractor  # type: ignore
 
 
 DEFAULT_INPUT = Path(__file__).resolve().parent.parent / "data" / "today_input.json"
@@ -39,7 +42,7 @@ def _task_name(task: dict) -> str:
 
 
 def _duration_minutes(task: dict) -> int:
-    raw = task.get("estimated_duration_minutes", task.get("estimated_duration"))
+    raw = task.get("duration_minutes", task.get("estimated_duration_minutes", task.get("estimated_duration")))
     try:
         minutes = int(raw)
     except (TypeError, ValueError):
@@ -124,6 +127,80 @@ def _dedupe_lines(lines: list[str]) -> list[str]:
             seen.add(line)
             result.append(line)
     return result
+
+
+def _split_text_tasks(text: str) -> list[str]:
+    normalized = re.sub(r"[，。；\n]+", "，", str(text).strip())
+    normalized = normalized.replace("然后", "，").replace("再", "，").replace("最后", "，")
+    normalized = normalized.replace("晚上", "，").replace("下午", "，").replace("上午", "，")
+    return [part.strip(" ，") for part in normalized.split("，") if part.strip(" ，")]
+
+
+def _guess_project(task_name: str) -> str:
+    lowered = task_name.lower()
+    if "streamlit" in lowered:
+        return "Streamlit"
+    if "langgraph" in lowered or "graph" in lowered:
+        return "LangGraph"
+    if "daily-task" in lowered or "记忆" in task_name or "memory" in lowered:
+        return "Daily-Task"
+    return ""
+
+
+def _guess_duration(task_name: str) -> int:
+    lowered = task_name.lower()
+    if "检查" in task_name or "看一下" in task_name or "check" in lowered:
+        return 30
+    if "跑起来" in task_name or "整理" in task_name or "补" in task_name:
+        return 60
+    return 30
+
+
+def _guess_priority(task_name: str) -> str:
+    lowered = task_name.lower()
+    if "先" in task_name or "streamlit" in lowered or "langgraph" in lowered:
+        return "P0"
+    if "最后" in task_name:
+        return "P2"
+    return "P1"
+
+
+def _guess_need_deep_work(task_name: str) -> bool:
+    lowered = task_name.lower()
+    keywords = ("整理", "检查", "设计", "graph", "langgraph", "streamlit")
+    return any(keyword in task_name or keyword in lowered for keyword in keywords)
+
+
+def extract_tasks_from_text(text: str, input_date: str | None = None) -> list[dict]:
+    """Extract tasks from free-form text with simple rules."""
+    tasks: list[dict] = []
+    for chunk in _split_text_tasks(text):
+        uncertainty_flags: list[str] = []
+        project = _guess_project(chunk)
+        priority = _guess_priority(chunk)
+        duration_minutes = _guess_duration(chunk)
+        need_deep_work = _guess_need_deep_work(chunk)
+        if not project:
+            uncertainty_flags.append("project_inferred_missing")
+        if priority == "P1":
+            uncertainty_flags.append("priority_defaulted")
+        if duration_minutes == 30:
+            uncertainty_flags.append("duration_defaulted")
+        tasks.append(
+            {
+                "task_name": chunk,
+                "priority": priority,
+                "duration_minutes": duration_minutes,
+                "estimated_duration": duration_minutes,
+                "project": project,
+                "need_deep_work": need_deep_work,
+                "need_deep_thinking": need_deep_work,
+                "uncertainty_flags": uncertainty_flags,
+                "uncertainty_level": "high" if uncertainty_flags else "medium",
+                "date": input_date or date.today().isoformat(),
+            }
+        )
+    return tasks
 
 
 def _get_user_preferences(user_memory: dict) -> tuple[int, list[str], str]:
@@ -296,14 +373,15 @@ def run_planner(payload: dict | None = None) -> dict:
     memory_bridge.normalize_data_files()
 
     payload = payload if isinstance(payload, dict) else {}
+    input_date = str(payload.get("date") or date.today().isoformat())
+    text_input = str(payload.get("text_input") or "").strip()
     tasks = payload.get("tasks", [])
-    if not isinstance(tasks, list):
+    if text_input:
+        tasks = task_extractor.extract_tasks(text_input, input_date=input_date)
+    elif not isinstance(tasks, list):
         tasks = []
 
-    input_date = str(payload.get("date") or date.today().isoformat())
     user_memory = memory_bridge.get_user_memory()
-    project_memory = memory_bridge.get_project_memory()
-    task_log = memory_bridge.get_task_log()
     max_tasks, peak_sessions, avoid_heavy_after = _get_user_preferences(user_memory)
 
     cleaned_tasks = [task for task in tasks if isinstance(task, dict)]
@@ -327,6 +405,7 @@ def run_planner(payload: dict | None = None) -> dict:
     reminders = build_reminders(refreshed_projects, refreshed_task_log)
 
     return {
+        "raw_input": payload,
         "input_date": input_date,
         "tasks": cleaned_tasks,
         "sorted_tasks": sorted_tasks,

@@ -38,22 +38,31 @@ except ModuleNotFoundError:
     from planner import DEFAULT_INPUT, load_input  # type: ignore
 
 
-def build_graph():
+def build_extract_graph():
     if StateGraph is None:
         return None
     graph = StateGraph(PlannerState)
     graph.add_node("load_input_node", load_input_node)
     graph.add_node("load_memory_node", load_memory_node)
     graph.add_node("extract_today_tasks_node", extract_today_tasks_node)
+
+    graph.add_edge(START, "load_input_node")
+    graph.add_edge("load_input_node", "load_memory_node")
+    graph.add_edge("load_memory_node", "extract_today_tasks_node")
+    graph.add_edge("extract_today_tasks_node", END)
+    return graph.compile()
+
+
+def build_schedule_graph():
+    if StateGraph is None:
+        return None
+    graph = StateGraph(PlannerState)
     graph.add_node("rank_tasks_node", rank_tasks_node)
     graph.add_node("schedule_tasks_node", schedule_tasks_node)
     graph.add_node("review_node", review_node)
     graph.add_node("save_results_node", save_results_node)
 
-    graph.add_edge(START, "load_input_node")
-    graph.add_edge("load_input_node", "load_memory_node")
-    graph.add_edge("load_memory_node", "extract_today_tasks_node")
-    graph.add_edge("extract_today_tasks_node", "rank_tasks_node")
+    graph.add_edge(START, "rank_tasks_node")
     graph.add_edge("rank_tasks_node", "schedule_tasks_node")
     graph.add_edge("schedule_tasks_node", "review_node")
     graph.add_edge("review_node", "save_results_node")
@@ -61,28 +70,41 @@ def build_graph():
     return graph.compile()
 
 
-def run_graph(raw_input: dict | None = None) -> PlannerState:
-    initial_state: PlannerState = {
+def run_extract_flow(raw_input: dict | str | None = None) -> PlannerState:
+    graph = build_extract_graph()
+    state: PlannerState = {
         "raw_input": raw_input or {},
         "warnings": [],
         "approved": False,
+        "editable_tasks": [],
+        "review_required": False,
     }
-    graph = build_graph()
     if graph is not None:
-        return graph.invoke(initial_state)
-
-    state = dict(initial_state)
-    for node in (
-        load_input_node,
-        load_memory_node,
-        extract_today_tasks_node,
-        rank_tasks_node,
-        schedule_tasks_node,
-        review_node,
-        save_results_node,
-    ):
+        return graph.invoke(state)
+    for node in (load_input_node, load_memory_node, extract_today_tasks_node):
         state.update(node(state))
     return state
+
+
+def run_schedule_flow(state: PlannerState) -> PlannerState:
+    current = dict(state)
+    current["extracted_tasks"] = list(current.get("editable_tasks") or current.get("extracted_tasks", []))
+    if not current.get("approved", False):
+        current["review_required"] = True
+        return current
+
+    graph = build_schedule_graph()
+    if graph is not None:
+        return graph.invoke(current)
+    for node in (rank_tasks_node, schedule_tasks_node, review_node, save_results_node):
+        current.update(node(current))
+    return current
+
+
+def run_graph(raw_input: dict | None = None) -> PlannerState:
+    initial_state = run_extract_flow(raw_input)
+    initial_state["approved"] = True
+    return run_schedule_flow(initial_state)
 
 
 def _print_graph_result(state: PlannerState) -> None:
